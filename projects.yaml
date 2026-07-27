@@ -1,0 +1,16 @@
+# 已登记项目：每个项目绑定自己的仓库与按语言的规范，避免多项目混用。
+# 某语言 standards 为空 → 该语言不做命名检查（语法检查仍会做）。
+
+projects:
+  fm-app:
+    display_name: fm-app（GF PHP）
+    repo: /Users/wumm/Sites/Flymodem/ffm-app-php/fm-app
+    standards:
+      php:
+        - /Users/wumm/Sites/Flymodem/ffm-app-php/fm-app/docs/coding-standards-gf.md
+      python: []
+    # GF 框架：Controller/Model 业务方法 snake_case；类名仍 PascalCase
+    php_method_style: snake_case
+    php_variable_style: either
+    # 仅作备注，网页不再自动选中任何分支
+    default_branch: master

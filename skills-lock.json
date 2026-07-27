@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "skills": {
+    "analyse-with-phpstan": {
+      "source": "phpstan/phpstan",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/analyse-with-phpstan/SKILL.md",
+      "computedHash": "020158747433affcce17cfeffa43b6340596c01e1dcc6ee1b5cc4e2928abe700"
+    },
+    "fp-check": {
+      "source": "trailofbits/skills",
+      "sourceType": "github",
+      "skillPath": "plugins/fp-check/skills/fp-check/SKILL.md",
+      "computedHash": "f66f363433a1e9784afd7f10b66602b260583af047f798663a72ade9845c0ec5"
+    },
+    "heuristic-to-deterministic": {
+      "source": "jpcaparas/skills",
+      "sourceType": "github",
+      "skillPath": "skills/heuristic-to-deterministic/SKILL.md",
+      "computedHash": "5a1129f3adf28fc9f40f8f563ce159b9440459ecc5ad189b829207bf421734cc"
+    },
+    "review-loop": {
+      "source": "2dmurali/review-loop-skill",
+      "sourceType": "github",
+      "skillPath": "review-loop/SKILL.md",
+      "computedHash": "4e42d2cd202322df976ddd70c3c1616a6b4e4722588012319669d61d932edf5f"
+    }
+  }
+}
