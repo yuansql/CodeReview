@@ -1,0 +1,14 @@
+# CodeReview 数字员工 — 仓库自检（Agent 自身）
+# 业务仓 MR 门禁模板见 docs/企业落地.md
+
+stages:
+  - test
+
+self-check:
+  stage: test
+  image: python:3.12-slim
+  script:
+    - pip install -e .
+    - bash scripts/self_check.sh
+  rules:
+    - if: $CI_PIPELINE_SOURCE

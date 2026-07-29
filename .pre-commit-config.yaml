@@ -1,0 +1,10 @@
+# 本仓库开发自检（Agent 自身）。业务仓门禁见 docs/企业落地.md
+repos:
+  - repo: local
+    hooks:
+      - id: code-review-agent-self-check
+        name: CodeReview golden tests
+        entry: scripts/self_check.sh
+        language: system
+        pass_filenames: false
+        always_run: true

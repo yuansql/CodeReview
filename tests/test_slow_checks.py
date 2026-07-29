@@ -40,6 +40,28 @@ def test_http_delete_is_not_sql() -> None:
     assert "SLOW_SQL" not in cats
 
 
+def test_redis_get_is_not_remote_io() -> None:
+    cats = _line_cats("A.php", [(56, "$verify = $redis->get('app_aichat_bind' . $phone);")])
+    assert "SLOW_CODE" not in cats
+    assert "SLOW_SQL" not in cats
+
+
+def test_model_delete_is_not_remote_io() -> None:
+    cats = _line_cats(
+        "A.php",
+        [(20, "M('app_ai_chat_bind')->delete(['id'=>$res['id']]);")],
+    )
+    assert "SLOW_CODE" not in cats
+
+
+def test_http_client_request_with_method_is_remote_io() -> None:
+    cats = _line_cats(
+        "A.php",
+        [(91, "return $this->request('POST', $url, $body, ['Content-Type: application/json']);")],
+    )
+    assert "SLOW_CODE" in cats
+
+
 def test_curl_exec_is_remote_io_not_sql() -> None:
     cats = _line_cats("A.php", [(222, "$output = curl_exec($ch);")])
     assert "SLOW_SQL" not in cats
@@ -104,6 +126,24 @@ def test_query_inside_foreach_is_n_plus_one() -> None:
     ]
     hits = _hunk("A.php", lines)
     assert ("SLOW_SQL", 11) in hits
+
+
+def test_python_cursor_execute_inside_for_is_n_plus_one() -> None:
+    lines = [
+        (10, "for uid in uids:"),
+        (11, "    row = cursor.execute('select 1 from t where id=%s', (uid,))"),
+    ]
+    hits = _hunk("a.py", lines)
+    assert ("SLOW_SQL", 11) in hits
+
+
+def test_python_execute_outside_loop_is_clean() -> None:
+    lines = [
+        (10, "rows = cursor.execute('select id from t')"),
+        (11, "for row in rows:"),
+        (12, "    use(row)"),
+    ]
+    assert _hunk("a.py", lines) == []
 
 
 def test_python_indent_detects_call_inside_for() -> None:

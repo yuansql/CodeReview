@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "code-review-agent"
-version = "0.1.0"
+version = "0.2.0"
 description = "数字员工：分支合并到 main 前的代码审核 Agent（PHP / Python）"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -23,6 +23,9 @@ dependencies = [
   "uvicorn[standard]>=0.30.0",
   "jinja2>=3.1.0",
 ]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
 
 [project.scripts]
 code-review-agent = "code_review_agent.cli:app"

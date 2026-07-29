@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# 安装到本仓库：ln -sf ../../hooks/pre-commit .git/hooks/pre-commit
+# 或：git config core.hooksPath hooks
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+exec "$ROOT/scripts/self_check.sh"

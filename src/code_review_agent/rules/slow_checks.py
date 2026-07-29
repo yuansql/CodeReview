@@ -8,12 +8,18 @@ from code_review_agent.models import Finding, Severity
 # 仅数据库调用（禁止把 curl_exec / HTTP DELETE 当成 SQL）
 _DB_CALL = re.compile(
     r"(?:"
+    # PHP / ThinkPHP / GF
     r"->query\s*\("
     r"|M\s*\([^)]*\)\s*->(?:query|execute|add|save|delete|select)\s*\("
     r"|->execute\s*\("
     r"|mysqli_query\s*\("
     r"|PDO::(?:query|exec|prepare)"
     r"|DB::(?:select|insert|update|delete|query|table)"
+    # Python DB-API / 常见 ORM 原始执行
+    r"|cursor\.executemany\s*\("
+    r"|cursor\.execute\s*\("
+    r"|\.executemany\s*\("
+    r"|(?<![A-Za-z0-9_])(?:conn|connection|cur|cursor|session|db)\.execute\s*\("
     r")",
     re.I,
 )
@@ -41,10 +47,16 @@ _SELECT_FROM = re.compile(r"\bSELECT\b.+\bFROM\b", re.I | re.S)
 _LOOP = re.compile(r"\b(foreach|for\s*\(|while\s*\()", re.I)
 _LOOP_KEYWORD = re.compile(r"\b(?:foreach\s*\(|for\s*\(|while\s*\()", re.I)
 _SLEEP = re.compile(r"\b(sleep|usleep|time_nanosleep)\s*\(", re.I)
+# 真远程/阻塞 IO：禁止把 Redis->get、M()->delete 等 ORM/缓存 API 算进来
 _REMOTE_IO = re.compile(
-    r"(?:file_get_contents\s*\(\s*['\"]https?://|curl_exec\s*\(|"
-    r"file_put_contents\s*\(|fopen\s*\(\s*['\"]https?://|"
-    r"->(?:request|get|post|put|delete)\s*\()",
+    r"(?:"
+    r"file_get_contents\s*\(\s*['\"]https?://"
+    r"|fopen\s*\(\s*['\"]https?://"
+    r"|curl_exec\s*\("
+    r"|file_put_contents\s*\("
+    # HTTP 客户端：首参为方法动词（SDK 常见），避免 $redis->get / ->delete
+    r"|->request\s*\(\s*['\"](?:GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)\b"
+    r")",
     re.I,
 )
 

@@ -1,11 +1,28 @@
-# hooks 预留
+# hooks
 
-本目录留给服务器触发适配，当前 CLI 已可独立运行。
+## 本仓库（Agent 自身）
 
-计划接口（尚未实现）：
+| 文件 | 作用 |
+|------|------|
+| `pre-commit` | 提交前跑 `scripts/self_check.sh`（黄金用例） |
 
-1. `post-merge` / `pre-receive` git hook：合并进 main 后调用
-   `python -m code_review_agent review --base main --head HEAD`
-2. GitLab / GitHub webhook：收到 merge 事件后同样调用 `run_review()`
+启用：
 
-接入时复用 `code_review_agent.graph.run_review`，不要另写一套审核逻辑。
+```bash
+make hooks-install
+# 等价于：git config core.hooksPath hooks && chmod +x hooks/pre-commit scripts/*.sh
+```
+
+## 业务仓门禁
+
+**不要**把业务审核逻辑写进业务仓 hook 再实现一遍。  
+请用 CI 调用：
+
+```bash
+bash /path/to/CodeReview/scripts/ci_gate.sh \
+  --project <id> --base <merge目标> --head <待合并> --fail-on fatal
+```
+
+详见 [docs/企业落地.md](../docs/企业落地.md)。
+
+历史预留的 post-merge / webhook 方案仍可包一层 HTTP，内部只调 `run_review()` / CLI。

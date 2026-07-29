@@ -747,11 +747,21 @@ def write_report_node(state: ReviewState) -> ReviewState:
     )
     fatals = sum(1 for f in findings if f.severity == Severity.FATAL)
     warnings = sum(1 for f in findings if f.severity == Severity.WARNING)
+    by_cat: dict[str, int] = {}
+    for f in findings:
+        by_cat[f.category] = by_cat.get(f.category, 0) + 1
     return {
         **state,
         "findings": [f.model_dump() for f in findings],
         "report_path": str(path),
-        "summary": {"fatal": fatals, "warning": warnings},
+        "summary": {
+            "fatal": fatals,
+            "warning": warnings,
+            "slow_sql": by_cat.get("SLOW_SQL", 0),
+            "slow_code": by_cat.get("SLOW_CODE", 0),
+            "naming": by_cat.get("NAMING", 0),
+            "categories": by_cat,
+        },
     }
 
 

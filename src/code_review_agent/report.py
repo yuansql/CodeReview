@@ -31,6 +31,13 @@ def render_report(
     fatals = [f for f in findings if f.severity == Severity.FATAL]
     warnings = [f for f in findings if f.severity == Severity.WARNING]
     slow_sql = [f for f in warnings if f.category == "SLOW_SQL"]
+    slow_code = [f for f in warnings if f.category == "SLOW_CODE"]
+    naming = [f for f in warnings if f.category == "NAMING"]
+    other_warn = [
+        f
+        for f in warnings
+        if f.category not in {"SLOW_SQL", "SLOW_CODE", "NAMING"}
+    ]
 
     if fatals:
         verdict = '<span class="sev-fatal">**存在致命错误（影响运行）**</span>'
@@ -59,7 +66,10 @@ def render_report(
         "## 摘要",
         f'- <span class="sev-fatal">致命（深红，影响运行）：{len(fatals)}</span>',
         f'- <span class="sev-slow">SLOW_SQL（淡红）：{len(slow_sql)}</span>',
-        f'- <span class="sev-warn">警告（黄）：{len(warnings)}</span>',
+        f'- <span class="sev-warn">SLOW_CODE：{len(slow_code)}</span>',
+        f'- <span class="sev-warn">NAMING：{len(naming)}</span>',
+        f'- <span class="sev-warn">其他警告：{len(other_warn)}</span>',
+        f'- <span class="sev-warn">警告合计：{len(warnings)}</span>',
         f"- 未审文件：{len(skipped_files)}（非 php/py）",
         "- 致命：语法错误、括号不匹配等会影响运行的问题",
         "- 命名仅类/方法明显违规；说得过去的不报。慢SQL/慢代码与命名只看 **新增行**；语法/括号查整文件",

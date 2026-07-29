@@ -111,6 +111,34 @@ def api_review(body: ReviewRequest):
         except ValueError:
             rel = report_path
 
+    feishu_ok = None
+    feishu_error = None
+    settings = get_settings()
+    if settings.feishu_webhook_url and (settings.feishu_notify or "auto").lower() not in {
+        "off",
+        "0",
+        "false",
+        "no",
+    }:
+        try:
+            from code_review_agent.notify_feishu import notify_review_result
+
+            notify_review_result(
+                webhook_url=settings.feishu_webhook_url,
+                secret=settings.feishu_webhook_secret,
+                keyword=settings.feishu_webhook_keyword or "审核推送",
+                project_id=body.project_id,
+                base_ref=body.merge_branch,
+                head_ref=body.branch,
+                summary=result.get("summary") or {},
+                report_path=report_path,
+                error=result.get("error"),
+            )
+            feishu_ok = True
+        except Exception as exc:  # noqa: BLE001
+            feishu_ok = False
+            feishu_error = str(exc)
+
     return {
         "ok": not bool(result.get("error")),
         "error": result.get("error"),
@@ -125,6 +153,8 @@ def api_review(body: ReviewRequest):
         "resolved_base": base_ref,
         "head_source": head_src,
         "base_source": base_src,
+        "feishu_ok": feishu_ok,
+        "feishu_error": feishu_error,
     }
 
 

@@ -8,8 +8,10 @@
 
 ## 默认技能链
 
-误报/规则争议：`investigation-first` → 取证 →（可选）`fp-check` → 改代码 → 正负用例 → `memory-1.0.2` 记偏好 → `criticism-self-criticism` 复盘。
+误报/规则争议：`investigation-first` → 取证 →（可选）`fp-check` →（`tdd`）正负用例 → 改代码 → `test-runner-1.0.0` 跑测 → `memory-1.0.2` 记偏好 → `criticism-self-criticism` 复盘。
 
 大报告一起过：`interactive-human-review` 或 `review-loop`。
 
 工作模式稳态：`freud-skill`。PHP 深静态分析：本机 `phpstan` + `analyse-with-phpstan`。
+
+落地门禁：`setup-pre-commit` + `git-guardrails-claude-code`（填 `hooks/`，按需启用）。

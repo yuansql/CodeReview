@@ -20,6 +20,13 @@ class Settings(BaseSettings):
     moonshot_model: str = "moonshot-v1-8k"
     target_repo: str | None = None
 
+    # 飞书自定义机器人（群 Webhook）
+    feishu_webhook_url: str = ""
+    feishu_webhook_secret: str = ""
+    feishu_webhook_keyword: str = "审核推送"
+    # auto | off ；CLI/网页可用参数覆盖
+    feishu_notify: str = "auto"
+
     @property
     def standards_python_dir(self) -> Path:
         return PROJECT_ROOT / "standards" / "python"

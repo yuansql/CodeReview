@@ -36,19 +36,25 @@ cd CodeReview
 source .venv/bin/activate
 pip install -e .
 
-# CLI：按项目审最近一笔
+# 自检（黄金用例）
+make test
+
+# CLI：按项目审相对 base 的差距；企业默认只拦致命
 python -m code_review_agent review \
   --project fm-app \
-  --last-commit \
-  --branch app3.2.4_a6_0615
+  --base origin/pre \
+  --branch app3.2.4_a6_0615 \
+  --fail-on fatal
 
 # 列出已登记项目
 python -m code_review_agent projects
 
 # 配置页（浏览器）
-code-review-web
+make web
 # 打开 http://127.0.0.1:8765
 ```
+
+**企业落地**（CI 门禁、退出码、验收清单）：见 **[docs/企业落地.md](docs/企业落地.md)**。
 
 ## 配置页
 
