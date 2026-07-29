@@ -13,3 +13,4 @@ reports/**/*.md
 dist/
 build/
 *.log
+.github/
